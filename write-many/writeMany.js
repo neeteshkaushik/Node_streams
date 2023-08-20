@@ -52,38 +52,41 @@ File size : 7.523431777954102 MB
 // )()
 
 
-/*
-Time : 400ms
-Memory : 47 MB
-File size : 7.523431777954102 MB
-*/
-// (
-//     async()=>{
-//         console.time('writeMany');
-//         const fileHandler = await fs.open('text.txt', 'w');
-//         const numberOfWrites = 1000000;
-//         const writeStream  = fileHandler.createWriteStream()
-//         let i = -1;
-//         function writeMany() {
-//             while(i < numberOfWrites){
-//                 ++i;
-//                 const buff = Buffer.from(` ${i} `, 'utf-8');
-//                 if( i === numberOfWrites - 1){
-//                     writeStream.end(buff);
-//                     break;
-//                 }
-//                 if(!writeStream.write(buff)) break;
+// /*
+// Time : 400ms
+// Memory : 47 MB
+// File size : 7.523431777954102 MB
+// */
+
+
+
+(
+    async()=>{
+        console.time('writeMany');
+        const fileHandler = await fs.open('text.txt', 'w');
+        const numberOfWrites = 10000000;
+        const writeStream  = fileHandler.createWriteStream()
+        let i = -1;
+        function writeMany() {
+            while(i < numberOfWrites){
+                ++i;
+                const buff = Buffer.from(` ${i} `, 'utf-8');
+                if( i === numberOfWrites - 1){
+                    writeStream.end(buff);
+                    break;
+                }
+                if(!writeStream.write(buff)) break;
                 
-//             }
-//         }
-//         writeMany();
-//         writeStream.on('drain', ()=>{
-//             writeMany();
-//         })
-//         writeStream.on('finish', async () => {
-//             const fileStat = await fileHandler.stat();
-//             console.log(`file size in MB ${fileStat.size / (1024 * 1024)}`);
-//             console.timeEnd('writeMany');
-//         });
-//     }
-// )()
+            }
+        }
+        writeMany();
+        writeStream.on('drain', ()=>{
+            writeMany();
+        })
+        writeStream.on('finish', async () => {
+            const fileStat = await fileHandler.stat();
+            console.log(`file size in MB ${fileStat.size / (1024 * 1024)}`);
+            console.timeEnd('writeMany');
+        });
+    }
+)()
